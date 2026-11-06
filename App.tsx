@@ -9,9 +9,8 @@ import {
 import { useFonts, PlayfairDisplay_600SemiBold } from '@expo-google-fonts/playfair-display';
 import { useState } from 'react';
 import { Ionicons } from '@expo/vector-icons';
-
 import HomeScreen from './HomeScreen';
-
+import ProfileScreen from './ProfileScreen';
 type TabName = 'Home' | 'Shop' | 'Routine' | 'Wishlist' | 'Profile';
 
 export default function App() {
@@ -85,7 +84,7 @@ export default function App() {
         return <Placeholder title="Wishlist" subtitle="Simpan produk favoritmu." />;
 
       case 'Profile':
-        return <Placeholder title="Profile" subtitle="Kelola profil akunmu." />;
+  return <ProfileScreen />;
 
       default:
         return <HomeScreen onSignIn={handleSignIn} />;
