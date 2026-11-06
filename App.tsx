@@ -1,17 +1,25 @@
 import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
 import { useFonts, PlayfairDisplay_600SemiBold } from '@expo-google-fonts/playfair-display';
+import { useState } from 'react';
+import HomeScreen from './HomeScreen';
 
 export default function App() {
   const [loaded] = useFonts({ PlayfairDisplay_600SemiBold });
+  const [screen, setScreen] = useState<'welcome' | 'home'>('welcome');
   if (!loaded) return null;
 
   const handleGetStarted = () => {
-    console.log('Get Started ditekan');
-  };
+  console.log('Get Started ditekan');
+  setScreen('home');
+};
 
-  const handleSignIn = () => {
+  const handleSignIn = () => { 
     console.log('Sign in ditekan');
   };
+
+  if (screen === 'home') {
+  return <HomeScreen onSignIn={handleSignIn} />;
+}
 
   return (
     <View style={styles.container}>
