@@ -6,11 +6,12 @@ import {
   ScrollView,
   TouchableOpacity,
   TextInput,
-  Alert
+  Alert,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import FormScreen from './FormScreen';
 import SettingScreen from './SettingScreen';
+import ListScreen from './ListScreen';
 
 export default function ProfileScreen({ onLogout }: { onLogout?: () => void }) {
   const [name, setName] = useState('Nama Pengguna');
@@ -21,7 +22,7 @@ export default function ProfileScreen({ onLogout }: { onLogout?: () => void }) {
   const [editEmail, setEditEmail] = useState(email);
   const [isEditing, setIsEditing] = useState(false);
 
-  const [menu, setMenu] = useState<null | 'info' | 'alamat' | 'notifikasi' | 'keamanan' | 'bantuan'>(null);
+  const [menu, setMenu] = useState<null | 'info' | 'alamat' | 'notifikasi' | 'keamanan' | 'bantuan' | 'pesanan' | 'favorit'>(null);
 
   const handleEdit = () => {
     setEditName(name);
@@ -42,11 +43,12 @@ export default function ProfileScreen({ onLogout }: { onLogout?: () => void }) {
   };
 
   const handleLogout = () => {
-  Alert.alert('Keluar', 'Yakin ingin keluar dari akun?', [
-    { text: 'Batal', style: 'cancel' },
-    { text: 'Keluar', style: 'destructive', onPress: () => onLogout?.() },
-  ]);
-};
+    Alert.alert('Keluar', 'Yakin ingin keluar dari akun?', [
+      { text: 'Batal', style: 'cancel' },
+      { text: 'Keluar', style: 'destructive', onPress: () => onLogout?.() },
+    ]);
+  };
+
   // Halaman Informasi Pribadi
   if (menu === 'info') {
     return (
@@ -88,6 +90,11 @@ export default function ProfileScreen({ onLogout }: { onLogout?: () => void }) {
   // Halaman Pengaturan
   if (menu === 'notifikasi' || menu === 'keamanan' || menu === 'bantuan') {
     return <SettingScreen type={menu} onBack={() => setMenu(null)} />;
+  }
+
+  // Halaman Pesanan & Favorit
+  if (menu === 'pesanan' || menu === 'favorit') {
+    return <ListScreen type={menu} onBack={() => setMenu(null)} />;
   }
 
   return (
@@ -147,8 +154,8 @@ export default function ProfileScreen({ onLogout }: { onLogout?: () => void }) {
       <Text style={styles.heading}>Akun Saya</Text>
       <Menu icon="person-outline" title="Informasi Pribadi" onPress={() => setMenu('info')} />
       <Menu icon="location-outline" title="Alamat Saya" onPress={() => setMenu('alamat')} />
-      <Menu icon="bag-outline" title="Pesanan Saya" />
-      <Menu icon="heart-outline" title="Produk Favorit" />
+      <Menu icon="bag-outline" title="Pesanan Saya" onPress={() => setMenu('pesanan')} />
+      <Menu icon="heart-outline" title="Produk Favorit" onPress={() => setMenu('favorit')} />
 
       <Text style={styles.heading}>Pengaturan</Text>
       <Menu icon="notifications-outline" title="Notifikasi" onPress={() => setMenu('notifikasi')} />
