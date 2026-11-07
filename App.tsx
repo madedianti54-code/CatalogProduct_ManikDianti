@@ -83,9 +83,15 @@ export default function App() {
       case 'Wishlist':
         return <Placeholder title="Wishlist" subtitle="Simpan produk favoritmu." />;
 
-      case 'Profile':
-  return <ProfileScreen />;
-
+     case 'Profile':
+  return (
+    <ProfileScreen
+      onLogout={() => {
+        setActiveTab('Home');
+        setScreen('welcome');
+      }}
+    />
+  );
       default:
         return <HomeScreen onSignIn={handleSignIn} />;
     }
