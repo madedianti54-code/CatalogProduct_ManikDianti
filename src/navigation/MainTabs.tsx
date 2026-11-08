@@ -4,6 +4,9 @@ import { Ionicons } from '@expo/vector-icons';
 import HomeScreen from '../screens/HomeScreen';
 import ProfileScreen from '../screens/ProfileScreen';
 import ShopScreen from '../screens/ShopScreen';
+import RoutineScreen from '../screens/RoutineScreen';
+import WishlistScreen from '../screens/WishlistScreen';
+
 
 const Tab = createBottomTabNavigator();
 
@@ -67,25 +70,9 @@ export default function MainTabs() {
           
       <Tab.Screen name="Shop" component={ShopScreen} />
 
-      <Tab.Screen name="Routine">
-        {({ navigation }) => (
-          <Placeholder
-            title="Routine"
-            subtitle="Atur rutinitas perawatan kulitmu."
-            onBack={() => navigation.navigate('Home')}
-          />
-        )}
-      </Tab.Screen>
+      <Tab.Screen name="Routine" component={RoutineScreen} />
 
-      <Tab.Screen name="Wishlist">
-        {({ navigation }) => (
-          <Placeholder
-            title="Wishlist"
-            subtitle="Simpan produk favoritmu."
-            onBack={() => navigation.navigate('Home')}
-          />
-        )}
-      </Tab.Screen>
+      <Tab.Screen name="Wishlist" component={WishlistScreen} />
 
       <Tab.Screen name="Profile">
         {({ navigation }) => (

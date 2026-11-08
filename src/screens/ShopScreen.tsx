@@ -1,6 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import { View, Text, StyleSheet, FlatList, TextInput, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { useFavorites } from './FavoritesContext';
 
 // Palet warna NUVÉRA
 const C = {
@@ -35,7 +36,7 @@ const rupiah = (n: number) => 'Rp ' + String(n).replace(/\B(?=(\d{3})+(?!\d))/g,
 export default function ShopScreen({ navigation }: { navigation?: any }) {
   const [search, setSearch] = useState('');
   const [cat, setCat] = useState('Semua');
-  const [fav, setFav] = useState<string[]>([]);
+  const { favorites, isFav, toggleFav } = useFavorites();
 
   const data = useMemo(
     () =>
@@ -47,8 +48,7 @@ export default function ShopScreen({ navigation }: { navigation?: any }) {
     [search, cat]
   );
 
-  const toggleFav = (id: string) =>
-    setFav((f) => (f.includes(id) ? f.filter((x) => x !== id) : [...f, id]));
+ 
 
   return (
     <View style={styles.container}>
@@ -63,7 +63,8 @@ export default function ShopScreen({ navigation }: { navigation?: any }) {
           <>
             <Text style={styles.title}>Shop</Text>
             <Text style={styles.sub}>Temukan produk skincare favoritmu.</Text>
-
+            <Text>Favorit: {favorites.length}</Text>
+            
             <View style={styles.search}>
               <Ionicons name="search-outline" size={18} color={C.placeholder} />
               <TextInput
@@ -102,9 +103,9 @@ export default function ShopScreen({ navigation }: { navigation?: any }) {
           >
             <View style={[styles.img, { backgroundColor: IMG_BG[index % IMG_BG.length] }]}>
               <Ionicons name="leaf-outline" size={36} color={C.primary} />
-              <TouchableOpacity style={styles.heart} onPress={() => toggleFav(item.id)}>
+              <TouchableOpacity style={styles.heart} onPress={() => toggleFav(item)}>
                 <Ionicons
-                  name={fav.includes(item.id) ? 'heart' : 'heart-outline'}
+                  name={isFav(item.id) ? 'heart' : 'heart-outline'}
                   size={18}
                   color={C.primary}
                 />
