@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { IMAGES } from '../Data/images';
 
 export type Product = { id: string; nama: string; kategori: string; harga: number; rating: number };
 

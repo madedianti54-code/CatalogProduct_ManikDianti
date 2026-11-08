@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { IMAGES } from '../Data/images';
 
 // Palet warna NUVÉRA
 const C = {
@@ -65,9 +66,7 @@ export default function WishlistScreen({ navigation }: { navigation?: any }) {
             activeOpacity={0.85}
             onPress={() => navigation?.navigate?.('Detail', { product: item })}
           >
-            <View style={[styles.img, { backgroundColor: IMG_BG[index % IMG_BG.length] }]}>
-              <Ionicons name="leaf-outline" size={28} color={C.primary} />
-            </View>
+            
             <View style={{ flex: 1 }}>
               <Text style={styles.kategori}>{item.kategori}</Text>
               <Text style={styles.nama} numberOfLines={2}>{item.nama}</Text>

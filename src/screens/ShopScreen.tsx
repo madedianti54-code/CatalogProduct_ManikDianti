@@ -1,7 +1,8 @@
 import React, { useMemo, useState } from 'react';
-import { View, Text, StyleSheet, FlatList, TextInput, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, FlatList, TextInput, TouchableOpacity, Image } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useFavorites } from './FavoritesContext';
+import { IMAGES } from '../Data/images';
 
 // Palet warna NUVÉRA
 const C = {
@@ -32,6 +33,14 @@ const PRODUCTS = [
 ];
 
 const rupiah = (n: number) => 'Rp ' + String(n).replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+
+// Daftar produk yang memakai foto. Produk yang tidak ada di sini akan memakai ikon.
+const IMAGE_BY_NAME: Record<string, any> = {
+  'Niacinamide Serum': IMAGES.serum,
+  'Barrier Cream': IMAGES.cream,
+};
+
+const getImage = (nama: string) => IMAGE_BY_NAME[nama] ?? null;
 
 export default function ShopScreen({ navigation }: { navigation?: any }) {
   const [search, setSearch] = useState('');
@@ -64,7 +73,7 @@ export default function ShopScreen({ navigation }: { navigation?: any }) {
             <Text style={styles.title}>Shop</Text>
             <Text style={styles.sub}>Temukan produk skincare favoritmu.</Text>
             <Text>Favorit: {favorites.length}</Text>
-            
+
             <View style={styles.search}>
               <Ionicons name="search-outline" size={18} color={C.placeholder} />
               <TextInput
@@ -102,15 +111,23 @@ export default function ShopScreen({ navigation }: { navigation?: any }) {
             onPress={() => navigation?.navigate?.('Detail', { product: item })}
           >
             <View style={[styles.img, { backgroundColor: IMG_BG[index % IMG_BG.length] }]}>
-              <Ionicons name="leaf-outline" size={36} color={C.primary} />
-              <TouchableOpacity style={styles.heart} onPress={() => toggleFav(item)}>
-                <Ionicons
-                  name={isFav(item.id) ? 'heart' : 'heart-outline'}
-                  size={18}
-                  color={C.primary}
-                />
-              </TouchableOpacity>
-            </View>
+ {getImage(item.nama) ? (
+  <Image
+    source={getImage(item.nama)}
+    style={{ width: '100%', height: '100%', borderRadius: 12 }}
+    resizeMode="cover"
+  />
+) : (
+  <Ionicons name="leaf-outline" size={36} color={C.primary} />
+)}
+  <TouchableOpacity style={styles.heart} onPress={() => toggleFav(item)}>
+    <Ionicons
+      name={isFav(item.id) ? 'heart' : 'heart-outline'}
+      size={18}
+      color={C.primary}
+    />
+  </TouchableOpacity>
+</View>
             <Text style={styles.kategori}>{item.kategori}</Text>
             <Text style={styles.nama} numberOfLines={2}>{item.nama}</Text>
             <View style={styles.ratingRow}>
