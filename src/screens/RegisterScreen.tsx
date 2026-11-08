@@ -1,6 +1,7 @@
 import { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, ScrollView, StyleSheet } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, ScrollView, Alert, StyleSheet } from 'react-native';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
+import { saveUser } from '../storage/auth';
 
 export default function RegisterScreen({ navigation }: any) {
   const [name, setName] = useState('');
@@ -8,6 +9,16 @@ export default function RegisterScreen({ navigation }: any) {
   const [password, setPassword] = useState('');
   const [phone, setPhone] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+
+  const handleRegister = async () => {
+    if (!name || !email || !password) {
+      Alert.alert('Oops', 'Lengkapi data dulu');
+      return;
+    }
+    await saveUser({ name, email, password, phone });
+    Alert.alert('Berhasil', 'Akun dibuat, silakan login');
+    navigation.navigate('Login');
+  };
 
   return (
     <ScrollView
@@ -85,10 +96,7 @@ export default function RegisterScreen({ navigation }: any) {
 
       <View style={styles.spacer} />
 
-      <TouchableOpacity
-        style={styles.button}
-        onPress={() => console.log(name, email, password, phone)}
-      >
+      <TouchableOpacity style={styles.button} onPress={handleRegister}>
         <Ionicons name="person-add-outline" size={22} color="#fff" />
         <Text style={styles.buttonText}>Sign Up</Text>
       </TouchableOpacity>

@@ -2,11 +2,11 @@ import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
 
 export default function WelcomeScreen({ navigation }: any) {
   const handleGetStarted = () => {
-    navigation.navigate('Login');
+    navigation.navigate('Register');
   };
 
   const handleSignIn = () => {
-    navigation.navigate('Register');
+    navigation.navigate('Login');
   };
 
   return (

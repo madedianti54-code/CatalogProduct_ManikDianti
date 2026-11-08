@@ -1,11 +1,21 @@
 import { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, Alert, StyleSheet } from 'react-native';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
+import { getUser } from '../storage/auth';
 
 export default function LoginScreen({ navigation }: any) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+
+  const handleLogin = async () => {
+    const user = await getUser();
+    if (user && user.email === email && user.password === password) {
+      navigation.replace('Main');
+    } else {
+      Alert.alert('Gagal', 'Email atau password salah');
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -58,7 +68,7 @@ export default function LoginScreen({ navigation }: any) {
 
       <View style={styles.spacer} />
 
-      <TouchableOpacity style={styles.button} onPress={() => console.log(email, password)}>
+      <TouchableOpacity style={styles.button} onPress={handleLogin}>
         <Ionicons name="log-in-outline" size={24} color="#fff" />
         <Text style={styles.buttonText}>Sign In</Text>
       </TouchableOpacity>
