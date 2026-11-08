@@ -3,6 +3,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
 import HomeScreen from '../screens/HomeScreen';
 import ProfileScreen from '../screens/ProfileScreen';
+import ShopScreen from '../screens/ShopScreen';
 
 const Tab = createBottomTabNavigator();
 
@@ -64,15 +65,7 @@ export default function MainTabs() {
        )}
     </Tab.Screen>
           
-      <Tab.Screen name="Shop">
-        {({ navigation }) => (
-          <Placeholder
-            title="Shop"
-            subtitle="Temukan produk skincare favoritmu."
-            onBack={() => navigation.navigate('Home')}
-          />
-        )}
-     </Tab.Screen>
+      <Tab.Screen name="Shop" component={ShopScreen} />
 
       <Tab.Screen name="Routine">
         {({ navigation }) => (
