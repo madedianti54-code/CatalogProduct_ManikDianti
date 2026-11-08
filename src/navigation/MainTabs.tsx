@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
 import HomeScreen from '../screens/HomeScreen';
@@ -14,11 +14,22 @@ const tabs: Record<string, { icon: string; activeIcon: string }> = {
   Profile: { icon: 'person-outline', activeIcon: 'person' },
 };
 
-function Placeholder({ title, subtitle }: { title: string; subtitle: string }) {
+type PlaceholderProps = {
+  title: string;
+  subtitle: string;
+  onBack: () => void;
+};
+
+function Placeholder({ title, subtitle, onBack }: PlaceholderProps) {
   return (
     <View style={styles.placeholder}>
       <Text style={styles.placeholderTitle}>{title}</Text>
       <Text style={styles.placeholderSubtitle}>{subtitle}</Text>
+
+      <TouchableOpacity style={styles.backButton} onPress={onBack}>
+        <Ionicons name="home-outline" size={20} color="#fff" />
+        <Text style={styles.backText}>Kembali ke Home</Text>
+      </TouchableOpacity>
     </View>
   );
 }
@@ -26,6 +37,7 @@ function Placeholder({ title, subtitle }: { title: string; subtitle: string }) {
 export default function MainTabs() {
   return (
     <Tab.Navigator
+      backBehavior="firstRoute"
       screenOptions={({ route }) => ({
         headerShown: false,
         tabBarActiveTintColor: '#455536',
@@ -46,22 +58,40 @@ export default function MainTabs() {
       <Tab.Screen name="Home">
         {({ navigation }) => (
           <HomeScreen
-            onSignIn={() => navigation.navigate('Login')}
             onProductPress={(product) => navigation.navigate('Detail', { product })}
+            onNavigate={(tab) => navigation.navigate(tab)}
+           />
+       )}
+    </Tab.Screen>
+          
+      <Tab.Screen name="Shop">
+        {({ navigation }) => (
+          <Placeholder
+            title="Shop"
+            subtitle="Temukan produk skincare favoritmu."
+            onBack={() => navigation.navigate('Home')}
+          />
+        )}
+     </Tab.Screen>
+
+      <Tab.Screen name="Routine">
+        {({ navigation }) => (
+          <Placeholder
+            title="Routine"
+            subtitle="Atur rutinitas perawatan kulitmu."
+            onBack={() => navigation.navigate('Home')}
           />
         )}
       </Tab.Screen>
 
-      <Tab.Screen name="Shop">
-        {() => <Placeholder title="Shop" subtitle="Temukan produk skincare favoritmu." />}
-      </Tab.Screen>
-
-      <Tab.Screen name="Routine">
-        {() => <Placeholder title="Routine" subtitle="Atur rutinitas perawatan kulitmu." />}
-      </Tab.Screen>
-
       <Tab.Screen name="Wishlist">
-        {() => <Placeholder title="Wishlist" subtitle="Simpan produk favoritmu." />}
+        {({ navigation }) => (
+          <Placeholder
+            title="Wishlist"
+            subtitle="Simpan produk favoritmu."
+            onBack={() => navigation.navigate('Home')}
+          />
+        )}
       </Tab.Screen>
 
       <Tab.Screen name="Profile">
@@ -89,5 +119,20 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#6B5D4F',
     marginTop: 10,
+  },
+  backButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#455536',
+    borderRadius: 20,
+    paddingHorizontal: 24,
+    paddingVertical: 14,
+    marginTop: 28,
+    gap: 8,
+  },
+  backText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: '600',
   },
 });
