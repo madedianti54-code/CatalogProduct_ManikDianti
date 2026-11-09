@@ -22,7 +22,6 @@ const IMG_BG = ['#E6D9C8', '#D5DCC8', '#EADBC8', '#DCCFBF', '#E3D6C2', '#E8DCC4'
 
 const CATEGORIES = ['Semua', 'Cleanser', 'Serum', 'Moisturizer', 'Sunscreen'];
 
-// Data contoh, ganti dengan data asli (folder Data)
 const PRODUCTS = [
   { id: '1', nama: 'Gentle Foam Cleanser', kategori: 'Cleanser', harga: 89000, rating: 4.8 },
   { id: '2', nama: 'Vitamin C Serum', kategori: 'Serum', harga: 149000, rating: 4.7 },
@@ -34,10 +33,13 @@ const PRODUCTS = [
 
 const rupiah = (n: number) => 'Rp ' + String(n).replace(/\B(?=(\d{3})+(?!\d))/g, '.');
 
-// Daftar produk yang memakai foto. Produk yang tidak ada di sini akan memakai ikon.
 const IMAGE_BY_NAME: Record<string, any> = {
   'Niacinamide Serum': IMAGES.serum,
   'Barrier Cream': IMAGES.cream,
+  'Micellar Water': IMAGES.MicellarWater,
+  'Vitamin C Serum': IMAGES.SerumVitC,
+  'Daily Sunscreen SPF 50': IMAGES.Sunscreen,
+  'Gentle Foam Cleanser': IMAGES.cleanser,
 };
 
 const getImage = (nama: string) => IMAGE_BY_NAME[nama] ?? null;
