@@ -6,6 +6,7 @@ import ProfileScreen from '../screens/ProfileScreen';
 import ShopScreen from '../screens/ShopScreen';
 import RoutineScreen from '../screens/RoutineScreen';
 import WishlistScreen from '../screens/WishlistScreen';
+import CartScreen from '../screens/CartScreen';
 
 
 const Tab = createBottomTabNavigator();
@@ -16,6 +17,7 @@ const tabs: Record<string, { icon: string; activeIcon: string }> = {
   Routine: { icon: 'flower-outline', activeIcon: 'flower' },
   Wishlist: { icon: 'heart-outline', activeIcon: 'heart' },
   Profile: { icon: 'person-outline', activeIcon: 'person' },
+  Cart: { icon: 'cart-outline', activeIcon: 'cart' },
 };
 
 type PlaceholderProps = {
@@ -73,6 +75,8 @@ export default function MainTabs() {
       <Tab.Screen name="Routine" component={RoutineScreen} />
 
       <Tab.Screen name="Wishlist" component={WishlistScreen} />
+
+      <Tab.Screen name="Cart" component={CartScreen} />
 
       <Tab.Screen name="Profile">
         {({ navigation }) => (
