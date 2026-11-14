@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, FlatList, ScrollView, TouchableOpacity, Image, } from 'react-native';
+import { View, Text, StyleSheet, FlatList, ScrollView, TouchableOpacity, Image,} from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { IMAGES } from '../Data/images';
 import { useFavorites } from './FavoritesContext';
 
 const C = {
@@ -15,42 +14,39 @@ const C = {
   danger: '#B45B50',
 };
 
-const CATEGORIES = ['Semua', 'Serum', 'Moisturizer', 'Sunscreen'];
+const CATEGORIES = [
+  'Semua',
+  'Serum',
+  'Moisturizer',
+  'Sunscreen',
+  'Lip Care',
+  'Body Care',
+  'Essence',
+  'Cleanser',
+  'Face Oil',
+  'Toner',
+];
 
-const rupiah = (n: number) => {
-  const text = String(n);
-  let hasil = '';
-  for (let i = 0; i < text.length; i++) {
-    if (i > 0 && (text.length - i) % 3 === 0) {
-      hasil += '.';
-    }
-    hasil += text[i];
-  }
-  return 'Rp ' + hasil;
-};
-
-const getImage = (nama: string) => {
-  const t = nama.toLowerCase();
-  if (t.includes('vitamin')) return IMAGES.SerumVitC;
-  if (t.includes('micellar')) return IMAGES.MicellarWater;
-  if (t.includes('cleanser')) return IMAGES.cleanser;
-  if (t.includes('sunscreen')) return IMAGES.Sunscreen;
-  if (t.includes('cream')) return IMAGES.cream;
-  return IMAGES.serum;
-};
-
-export default function WishlistScreen({ navigation }: { navigation?: any }) {
+export default function WishlistScreen({
+  navigation,
+}: {
+  navigation?: any;
+}) {
   const { favorites, toggleFav } = useFavorites();
   const [filter, setFilter] = useState('Semua');
 
   const items =
-    filter === 'Semua' ? favorites : favorites.filter((p) => p.kategori === filter);
+    filter === 'Semua'
+      ? favorites
+      : favorites.filter((p) => p.category === filter);
 
   return (
     <View style={styles.container}>
       <View style={styles.header}>
         <View style={styles.headerSide} />
+
         <Text style={styles.logo}>NUVÉRA</Text>
+
         <TouchableOpacity
           style={styles.headerSide}
           onPress={() => navigation?.navigate?.('Cart')}
@@ -61,28 +57,45 @@ export default function WishlistScreen({ navigation }: { navigation?: any }) {
 
       <FlatList
         data={items}
-        keyExtractor={(p) => p.id}
+        keyExtractor={(item) => item.id}
         contentContainerStyle={styles.content}
         showsVerticalScrollIndicator={false}
         ListHeaderComponent={
           <View>
             <View style={styles.topRow}>
               <Text style={styles.eyebrow}>KOLEKSIMU</Text>
-              <Text style={styles.eyebrow}>{favorites.length} ITEM</Text>
+              <Text style={styles.eyebrow}>
+                {favorites.length} ITEM
+              </Text>
             </View>
 
             <Text style={styles.title}>Wishlist</Text>
-            <Text style={styles.sub}>Kecantikan dimulai dari pilihanmu</Text>
 
-            <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.chipRow}>
-              {CATEGORIES.map((c) => (
+            <Text style={styles.subtitle}>
+              Kecantikan dimulai dari pilihanmu
+            </Text>
+
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              style={styles.chipRow}
+            >
+              {CATEGORIES.map((category) => (
                 <TouchableOpacity
-                  key={c}
-                  style={[styles.chip, filter === c && styles.chipActive]}
-                  onPress={() => setFilter(c)}
+                  key={category}
+                  style={[
+                    styles.chip,
+                    filter === category && styles.chipActive,
+                  ]}
+                  onPress={() => setFilter(category)}
                 >
-                  <Text style={[styles.chipText, filter === c && styles.chipTextActive]}>
-                    {c}
+                  <Text
+                    style={[
+                      styles.chipText,
+                      filter === category && styles.chipTextActive,
+                    ]}
+                  >
+                    {category}
                   </Text>
                 </TouchableOpacity>
               ))}
@@ -92,12 +105,25 @@ export default function WishlistScreen({ navigation }: { navigation?: any }) {
         ListEmptyComponent={
           <View style={styles.emptyBox}>
             <View style={styles.emptyIcon}>
-              <Ionicons name="heart-outline" size={40} color={C.primary} />
+              <Ionicons
+                name="heart-outline"
+                size={40}
+                color={C.primary}
+              />
             </View>
-            <Text style={styles.emptyTitle}>Wishlist masih kosong</Text>
-            <Text style={styles.emptySub}>
-              Tekan ikon hati di produk untuk menyimpannya di sini.
+
+            <Text style={styles.emptyTitle}>
+              {favorites.length === 0
+                ? 'Wishlist masih kosong'
+                : 'Produk tidak ditemukan'}
             </Text>
+
+            <Text style={styles.emptySub}>
+              {favorites.length === 0
+                ? 'Tekan ikon hati di produk untuk menyimpannya di sini.'
+                : 'Belum ada produk dalam kategori ini.'}
+            </Text>
+
             <TouchableOpacity
               style={styles.button}
               onPress={() => navigation?.navigate?.('Shop')}
@@ -110,29 +136,57 @@ export default function WishlistScreen({ navigation }: { navigation?: any }) {
           <TouchableOpacity
             style={styles.card}
             activeOpacity={0.85}
-            onPress={() => navigation?.navigate?.('Detail', { product: item })}
+            onPress={() =>
+              navigation?.navigate?.('Detail', { product: item })
+            }
           >
-            <View style={styles.imageWrap}>
-              <Image source={getImage(item.nama)} style={styles.photo} resizeMode="cover" />
+            <View style={[styles.imageWrap, { backgroundColor: item.tint }]}>
+              {item.image ? (
+                <Image
+                  source={item.image}
+                  style={styles.photo}
+                  resizeMode="cover"
+                />
+              ) : (
+                <Ionicons
+                  name={item.icon as any}
+                  size={40}
+                  color={C.primary}
+                />
+              )}
+
               <TouchableOpacity
                 style={styles.heart}
                 onPress={() => toggleFav(item)}
                 hitSlop={8}
               >
-                <Ionicons name="heart" size={18} color={C.danger} />
+                <Ionicons
+                  name="heart"
+                  size={18}
+                  color={C.danger}
+                />
               </TouchableOpacity>
             </View>
 
             <View style={styles.info}>
-              <Text style={styles.kategori}>{item.kategori.toUpperCase()}</Text>
-              <Text style={styles.nama} numberOfLines={2}>
-                {item.nama}
+              <Text style={styles.kategori}>
+                <Text>{(item.category || 'Skincare').toUpperCase()}</Text>
               </Text>
+
+              <Text style={styles.nama} numberOfLines={2}>
+                {item.name}
+              </Text>
+
               <View style={styles.ratingRow}>
-                <Ionicons name="star" size={13} color={C.accent} />
+                <Ionicons
+                  name="star"
+                  size={13}
+                  color={C.accent}
+                />
                 <Text style={styles.rating}>{item.rating}</Text>
               </View>
-              <Text style={styles.harga}>{rupiah(item.harga)}</Text>
+
+              <Text style={styles.harga}>{item.price}</Text>
             </View>
           </TouchableOpacity>
         )}
@@ -154,7 +208,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 22,
     paddingBottom: 14,
     borderBottomWidth: 1,
-    borderBottomColor: C.secondary,
+    borderBottomColor: '#CDBFAE',
   },
   headerSide: {
     width: 28,
@@ -186,7 +240,7 @@ const styles = StyleSheet.create({
     color: C.text,
     marginTop: 10,
   },
-  sub: {
+  subtitle: {
     fontStyle: 'italic',
     color: C.textSub,
     marginTop: 6,
@@ -227,7 +281,8 @@ const styles = StyleSheet.create({
   imageWrap: {
     width: 112,
     height: 132,
-    backgroundColor: C.secondary,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   photo: {
     width: '100%',

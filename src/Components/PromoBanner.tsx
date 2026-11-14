@@ -3,10 +3,10 @@ import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 export default function PromoBanner({ onPress }: { onPress: () => void }) {
   return (
     <View style={styles.promo}>
-      <Text style={styles.title}>Bangun rutinitas sempurnamu</Text>
-      <Text style={styles.sub}>Temukan produk yang cocok untuk kulitmu.</Text>
+      <Text style={styles.title}>Level Up Your Glow</Text>
+      <Text style={styles.sub}>Kenali produk yang cocok untuk kulitmu</Text>
       <TouchableOpacity style={styles.button} onPress={onPress}>
-        <Text style={styles.buttonText}>Coba Kuis Kulit →</Text>
+        <Text style={styles.buttonText}>Find Your Skin Match →</Text>
       </TouchableOpacity>
     </View>
   );

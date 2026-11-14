@@ -10,7 +10,7 @@ export default function HeroBanner({ onPress }: { onPress: () => void }) {
     >
       <View style={styles.overlay} />
       <Text style={styles.title}>Kulit sehat{'\n'}tanpa ribet</Text>
-      <Text style={styles.sub}>Formula bersih, hasil terlihat</Text>
+      <Text style={styles.sub}>Glow Starts Here</Text>
       <TouchableOpacity style={styles.button} onPress={onPress}>
         <Text style={styles.buttonText}>Temukan Rutinitasmu</Text>
         <Ionicons name="arrow-forward" size={16} color="#fff" />
