@@ -1,45 +1,80 @@
-import React, { useState } from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  ScrollView,
-  TouchableOpacity,
-  TextInput,
-  Alert,
-} from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, Text, Image, StyleSheet, ScrollView, TouchableOpacity, Alert } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
+import * as ImagePicker from 'expo-image-picker';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import FormScreen from './FormScreen';
 import SettingScreen from './SettingScreen';
 import ListScreen from './ListScreen';
+import { getUser } from '../storage/auth';
+
+const C = {
+  primary: '#455536',
+  bg: '#F8EFE3',
+  surface: '#FFFFFF',
+  text: '#33291F',
+  textSub: '#6B5D4F',
+  placeholder: '#A89A8A',
+  tabInactive: '#999999',
+  secondary: '#E6D9C8',
+  divider: '#CDBFAE',
+  tabBorder: '#E8E4DF',
+  accent: '#B5835A',
+  soft: '#D5DCC8',
+  danger: '#B45B50',
+  dangerBg: '#F5E9E6',
+};
+
+const PHOTO_KEY = 'nuvera_photo';
+
+type MenuName = null | 'info' | 'alamat' | 'notifikasi' | 'keamanan' | 'bantuan' | 'pesanan' | 'favorit';
+
+const MENUS = [
+  { key: 'info', icon: 'person-outline', title: 'Informasi Pribadi' },
+  { key: 'alamat', icon: 'location-outline', title: 'Alamat Saya' },
+  { key: 'pesanan', icon: 'cube-outline', title: 'Pesanan Saya' },
+  { key: 'favorit', icon: 'heart-outline', title: 'Produk Favorit' },
+  { key: 'notifikasi', icon: 'notifications-outline', title: 'Notifikasi' },
+  { key: 'keamanan', icon: 'lock-closed-outline', title: 'Keamanan Akun' },
+  { key: 'bantuan', icon: 'help-circle-outline', title: 'Bantuan' },
+];
 
 export default function ProfileScreen({ onLogout }: { onLogout?: () => void }) {
-  const [name, setName] = useState('Nama Pengguna');
-  const [email, setEmail] = useState('emailpengguna@gmail.com');
+  const navigation = useNavigation<any>();
+  const [name, setName] = useState('Pengguna');
+  const [email, setEmail] = useState('-');
+  const [photo, setPhoto] = useState<string | null>(null);
   const [data, setData] = useState({ hp: '', alamat: '', kota: '', kodepos: '' });
+  const [menu, setMenu] = useState<MenuName>(null);
 
-  const [editName, setEditName] = useState(name);
-  const [editEmail, setEditEmail] = useState(email);
-  const [isEditing, setIsEditing] = useState(false);
+  useEffect(() => {
+    getUser().then((u) => {
+      if (u) {
+        setName(u.name);
+        setEmail(u.email);
+        setData((d) => ({ ...d, hp: u.phone }));
+      }
+    });
 
-  const [menu, setMenu] = useState<null | 'info' | 'alamat' | 'notifikasi' | 'keamanan' | 'bantuan' | 'pesanan' | 'favorit'>(null);
+    AsyncStorage.getItem(PHOTO_KEY).then((v) => {
+      if (v) setPhoto(v);
+    });
+  }, []);
 
-  const handleEdit = () => {
-    setEditName(name);
-    setEditEmail(email);
-    setIsEditing(true);
-  };
+  const pickPhoto = async () => {
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ['images'],
+      allowsEditing: true,
+      aspect: [1, 1],
+      quality: 0.7,
+    });
 
-  const handleSave = () => {
-    setName(editName);
-    setEmail(editEmail);
-    setIsEditing(false);
-  };
-
-  const handleCancel = () => {
-    setEditName(name);
-    setEditEmail(email);
-    setIsEditing(false);
+    if (!result.canceled) {
+      const uri = result.assets[0].uri;
+      setPhoto(uri);
+      AsyncStorage.setItem(PHOTO_KEY, uri);
+    }
   };
 
   const handleLogout = () => {
@@ -49,13 +84,12 @@ export default function ProfileScreen({ onLogout }: { onLogout?: () => void }) {
     ]);
   };
 
-  // Halaman Informasi Pribadi
   if (menu === 'info') {
     return (
       <FormScreen
         title="Informasi Pribadi"
         onBack={() => setMenu(null)}
-        onSave={(v) => {
+        onSave={(v: any) => {
           setName(v.nama);
           setEmail(v.email);
           setData((d) => ({ ...d, hp: v.hp }));
@@ -69,13 +103,12 @@ export default function ProfileScreen({ onLogout }: { onLogout?: () => void }) {
     );
   }
 
-  // Halaman Alamat Saya
   if (menu === 'alamat') {
     return (
       <FormScreen
         title="Alamat Saya"
         onBack={() => setMenu(null)}
-        onSave={(v) =>
+        onSave={(v: any) =>
           setData((d) => ({ ...d, alamat: v.alamat, kota: v.kota, kodepos: v.kodepos }))
         }
         fields={[
@@ -87,229 +120,259 @@ export default function ProfileScreen({ onLogout }: { onLogout?: () => void }) {
     );
   }
 
-  // Halaman Pengaturan
   if (menu === 'notifikasi' || menu === 'keamanan' || menu === 'bantuan') {
     return <SettingScreen type={menu} onBack={() => setMenu(null)} />;
   }
 
-  // Halaman Pesanan & Favorit
   if (menu === 'pesanan' || menu === 'favorit') {
     return <ListScreen type={menu} onBack={() => setMenu(null)} />;
   }
 
   return (
-    <ScrollView style={styles.container}>
-      <Text style={styles.logo}>NUVÉRA</Text>
-      <Text style={styles.title}>Profil Saya</Text>
-
-      {/* Kartu profil (satu saja) */}
-      <View style={styles.profile}>
-        <View style={styles.avatar}>
-          <Ionicons name="person" size={45} color="#63866B" />
-        </View>
-
-        {isEditing ? (
-          <>
-            <Text style={styles.label}>Nama Pengguna</Text>
-            <TextInput
-              style={styles.input}
-              value={editName}
-              onChangeText={setEditName}
-              placeholder="Masukkan nama"
-            />
-
-            <Text style={styles.label}>Email</Text>
-            <TextInput
-              style={styles.input}
-              value={editEmail}
-              onChangeText={setEditEmail}
-              placeholder="Masukkan email"
-              keyboardType="email-address"
-              autoCapitalize="none"
-            />
-
-            <View style={styles.buttonRow}>
-              <TouchableOpacity style={styles.cancelButton} onPress={handleCancel}>
-                <Text style={styles.cancelText}>Batal</Text>
-              </TouchableOpacity>
-
-              <TouchableOpacity style={styles.button} onPress={handleSave}>
-                <Text style={styles.buttonText}>Simpan</Text>
-              </TouchableOpacity>
-            </View>
-          </>
-        ) : (
-          <>
-            <Text style={styles.name}>{name}</Text>
-            <Text style={styles.email}>{email}</Text>
-
-            <TouchableOpacity style={styles.button} onPress={handleEdit}>
-              <Text style={styles.buttonText}>Edit Profil</Text>
-            </TouchableOpacity>
-          </>
-        )}
+    <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
+      <View style={styles.header}>
+        <Text style={styles.logo}>NUVÉRA</Text>
+        <TouchableOpacity onPress={() => setMenu('notifikasi')}>
+          <Ionicons name="notifications-outline" size={24} color={C.text} />
+        </TouchableOpacity>
       </View>
 
-      {/* Menu Profil */}
-      <Text style={styles.heading}>Akun Saya</Text>
-      <Menu icon="person-outline" title="Informasi Pribadi" onPress={() => setMenu('info')} />
-      <Menu icon="location-outline" title="Alamat Saya" onPress={() => setMenu('alamat')} />
-      <Menu icon="bag-outline" title="Pesanan Saya" onPress={() => setMenu('pesanan')} />
-      <Menu icon="heart-outline" title="Produk Favorit" onPress={() => setMenu('favorit')} />
+      <Text style={styles.eyebrow}>AKUN SAYA</Text>
 
-      <Text style={styles.heading}>Pengaturan</Text>
-      <Menu icon="notifications-outline" title="Notifikasi" onPress={() => setMenu('notifikasi')} />
-      <Menu icon="lock-closed-outline" title="Keamanan Akun" onPress={() => setMenu('keamanan')} />
-      <Menu icon="help-circle-outline" title="Bantuan" onPress={() => setMenu('bantuan')} />
+      <View style={styles.userRow}>
+        <TouchableOpacity onPress={pickPhoto} activeOpacity={0.8}>
+          <View style={styles.avatar}>
+            {photo ? (
+              <Image source={{ uri: photo }} style={styles.avatarPhoto} />
+            ) : (
+              <Text style={styles.avatarText}>{name.charAt(0).toUpperCase()}</Text>
+            )}
+          </View>
+          <View style={styles.cameraBadge}>
+            <Ionicons name="camera" size={12} color={C.surface} />
+          </View>
+        </TouchableOpacity>
 
-      {/* Keluar */}
+        <View style={styles.userInfo}>
+          <Text style={styles.hello}>Hello {name}</Text>
+          <Text style={styles.email}>{email}</Text>
+        </View>
+
+        <TouchableOpacity style={styles.editButton} onPress={() => setMenu('info')}>
+          <Text style={styles.editText}>Edit</Text>
+        </TouchableOpacity>
+      </View>
+
+      <View style={styles.skinCard}>
+        <Ionicons name="leaf-outline" size={90} color={C.primary} style={styles.skinLeaf} />
+        <Text style={styles.skinEyebrow}>MY SKIN PROFILE</Text>
+        <Text style={styles.skinTitle}>Rutinitasmu, disempurnakan</Text>
+        <Text style={styles.skinDesc}>
+          Kami mempelajari kulitmu untuk memberi rekomendasi yang lebih baik
+        </Text>
+        <TouchableOpacity style={styles.skinLink} onPress={() => navigation.navigate('Routine')}>
+          <Text style={styles.skinLinkText}>Lihat rutinitas</Text>
+          <Ionicons name="chevron-forward" size={16} color={C.text} />
+        </TouchableOpacity>
+      </View>
+
+      <View style={styles.menuList}>
+        {MENUS.map((m) => (
+          <TouchableOpacity
+            key={m.key}
+            style={styles.menuItem}
+            activeOpacity={0.7}
+            onPress={() => setMenu(m.key as MenuName)}
+          >
+            <View style={styles.menuIcon}>
+              <Ionicons name={m.icon as any} size={20} color={C.primary} />
+            </View>
+            <Text style={styles.menuTitle}>{m.title}</Text>
+            <Ionicons name="chevron-forward" size={18} color={C.textSub} />
+          </TouchableOpacity>
+        ))}
+      </View>
+
       <TouchableOpacity style={styles.logout} onPress={handleLogout}>
-        <Ionicons name="log-out-outline" size={20} color="#B45B50" />
+        <Ionicons name="log-out-outline" size={20} color={C.danger} />
         <Text style={styles.logoutText}>Keluar</Text>
       </TouchableOpacity>
     </ScrollView>
   );
 }
 
-function Menu({
-  icon,
-  title,
-  onPress,
-}: {
-  icon: any;
-  title: string;
-  onPress?: () => void;
-}) {
-  return (
-    <TouchableOpacity style={styles.menu} onPress={onPress} activeOpacity={0.7}>
-      <Ionicons name={icon} size={20} color="#63866B" />
-      <Text style={styles.menuText}>{title}</Text>
-      <Ionicons name="chevron-forward" size={18} color="#B5B5B0" />
-    </TouchableOpacity>
-  );
-}
-
 const styles = StyleSheet.create({
-  label: {
-    alignSelf: 'flex-start',
-    color: '#63866B',
-    fontWeight: 'bold',
-    marginTop: 15,
-    marginBottom: 6,
-  },
-  input: {
-    width: '100%',
-    backgroundColor: '#FAF6F2',
-    borderWidth: 1,
-    borderColor: '#D8DFD4',
-    borderRadius: 10,
-    padding: 12,
-    color: '#33291F',
-  },
-  buttonRow: {
-    flexDirection: 'row',
-    gap: 10,
-    marginTop: 18,
-  },
-  cancelButton: {
-    backgroundColor: '#EAEAE5',
-    paddingHorizontal: 25,
-    paddingVertical: 10,
-    borderRadius: 20,
-    marginTop: 15,
-  },
-  cancelText: {
-    color: '#555555',
-    fontWeight: 'bold',
-  },
   container: {
     flex: 1,
-    backgroundColor: '#FAF6F2',
-    padding: 22,
+    backgroundColor: C.bg,
+    paddingHorizontal: 22,
+  },
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingTop: 60,
+    paddingBottom: 14,
+    borderBottomWidth: 1,
+    borderBottomColor: C.divider,
   },
   logo: {
-    fontSize: 16,
-    letterSpacing: 3,
-    color: '#63866B',
-    fontWeight: 'bold',
-    marginTop: 60,
+    fontFamily: 'PlayfairDisplay_600SemiBold',
+    fontSize: 20,
+    letterSpacing: 4,
+    color: C.text,
   },
-  title: {
-    fontSize: 28,
-    color: '#33291F',
-    fontWeight: 'bold',
-    marginTop: 12,
-    marginBottom: 20,
+  eyebrow: {
+    fontSize: 11,
+    letterSpacing: 2,
+    color: C.textSub,
+    marginTop: 22,
   },
-  profile: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: 18,
+  userRow: {
+    flexDirection: 'row',
     alignItems: 'center',
-    padding: 22,
+    marginTop: 14,
   },
   avatar: {
-    width: 85,
-    height: 85,
-    borderRadius: 50,
-    backgroundColor: '#E8EEE5',
+    width: 64,
+    height: 64,
+    borderRadius: 32,
+    backgroundColor: C.soft,
+    alignItems: 'center',
+    justifyContent: 'center',
+    overflow: 'hidden',
+  },
+  avatarPhoto: {
+    width: '100%',
+    height: '100%',
+  },
+  avatarText: {
+    fontFamily: 'PlayfairDisplay_600SemiBold',
+    fontSize: 28,
+    color: C.primary,
+  },
+  cameraBadge: {
+    position: 'absolute',
+    right: 0,
+    bottom: 0,
+    width: 22,
+    height: 22,
+    borderRadius: 11,
+    backgroundColor: C.primary,
+    borderWidth: 2,
+    borderColor: C.bg,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  name: {
-    fontSize: 19,
-    fontWeight: 'bold',
-    color: '#33291F',
-    marginTop: 12,
+  userInfo: {
+    flex: 1,
+    marginLeft: 14,
+  },
+  hello: {
+    fontFamily: 'PlayfairDisplay_600SemiBold',
+    fontSize: 24,
+    color: C.text,
   },
   email: {
-    color: '#999',
-    marginTop: 5,
+    fontSize: 13,
+    color: C.textSub,
+    marginTop: 2,
   },
-  button: {
-    backgroundColor: '#63866B',
-    paddingHorizontal: 25,
-    paddingVertical: 10,
+  editButton: {
+    borderWidth: 1,
+    borderColor: C.secondary,
+    backgroundColor: C.surface,
+    paddingHorizontal: 16,
+    paddingVertical: 8,
     borderRadius: 20,
-    marginTop: 15,
   },
-  buttonText: {
-    color: '#FFF',
-    fontWeight: 'bold',
+  editText: {
+    fontSize: 13,
+    fontWeight: '600',
+    color: C.text,
   },
-  heading: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#63866B',
-    marginTop: 25,
-    marginBottom: 12,
+  skinCard: {
+    backgroundColor: C.soft,
+    borderRadius: 22,
+    padding: 20,
+    marginTop: 22,
+    overflow: 'hidden',
   },
-  menu: {
+  skinLeaf: {
+    position: 'absolute',
+    right: 10,
+    top: 10,
+    opacity: 0.15,
+  },
+  skinEyebrow: {
+    fontSize: 11,
+    letterSpacing: 2,
+    color: C.primary,
+  },
+  skinTitle: {
+    fontFamily: 'PlayfairDisplay_600SemiBold',
+    fontSize: 22,
+    color: C.text,
+    marginTop: 8,
+  },
+  skinDesc: {
+    fontSize: 13,
+    lineHeight: 19,
+    color: C.textSub,
+    marginTop: 6,
+    paddingRight: 40,
+  },
+  skinLink: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#FFF',
-    padding: 16,
-    borderRadius: 12,
-    marginBottom: 10,
-    gap: 12,
+    marginTop: 12,
   },
-  menuText: {
+  skinLinkText: {
+    fontSize: 13,
+    fontWeight: '600',
+    color: C.text,
+  },
+  menuList: {
+    backgroundColor: C.surface,
+    borderRadius: 18,
+    marginTop: 22,
+    overflow: 'hidden',
+  },
+  menuItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 14,
+    borderBottomWidth: 1,
+    borderBottomColor: C.tabBorder,
+  },
+  menuIcon: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: C.bg,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  menuTitle: {
     flex: 1,
-    color: '#443B33',
-    fontSize: 14,
+    marginLeft: 12,
+    fontSize: 15,
+    fontWeight: '600',
+    color: C.text,
   },
   logout: {
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#F5E9E6',
+    backgroundColor: C.dangerBg,
     padding: 15,
-    borderRadius: 12,
-    marginTop: 20,
-    marginBottom: 30,
+    borderRadius: 14,
+    marginTop: 18,
+    marginBottom: 40,
     gap: 8,
   },
   logoutText: {
-    color: '#B45B50',
+    color: C.danger,
     fontWeight: 'bold',
   },
 });

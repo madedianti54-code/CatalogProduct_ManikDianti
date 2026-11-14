@@ -14,6 +14,7 @@ const GRAY = '#6B5D4F';
 
 export default function ProductCard({ item, onPress }: Props) {
   const { addToCart } = useCart();
+
   const { name, subtitle, rating, price, badge, icon, tint, image } = item;
 
   const add = () => {
@@ -22,13 +23,14 @@ export default function ProductCard({ item, onPress }: Props) {
   };
 
   return (
-    <TouchableOpacity style={styles.card} onPress={onPress}>
+    <TouchableOpacity style={styles.card} onPress={onPress} activeOpacity={0.9}>
       <View style={[styles.thumb, { backgroundColor: tint }]}>
         {image ? (
           <Image source={image} style={styles.photo} resizeMode="cover" />
         ) : (
           <Ionicons name={icon as any} size={44} color={GREEN} />
         )}
+
         {!!badge && (
           <View style={styles.badge}>
             <Text style={styles.badgeText}>{badge}</Text>
@@ -41,9 +43,7 @@ export default function ProductCard({ item, onPress }: Props) {
 
       <View style={styles.row}>
         <Ionicons name="star" size={14} color="#B5835A" />
-        <Text style={styles.sub}>
-          {rating}
-        </Text>
+        <Text style={styles.sub}>{rating}</Text>
       </View>
 
       <View style={[styles.row, styles.bottom]}>
