@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, FlatList, ScrollView, TouchableOpacity, Image, } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { IMAGES } from '../Data/images';
+import { useFavorites } from './FavoritesContext';
 
-// Palet warna NUVÉRA
 const C = {
   primary: '#455536',
   bg: '#F8EFE3',
@@ -15,37 +15,79 @@ const C = {
   danger: '#B45B50',
 };
 
-// Latar gambar produk (variasi krem)
-const IMG_BG = ['#E6D9C8', '#D5DCC8', '#EADBC8', '#DCCFBF', '#E3D6C2', '#E8DCC4', '#DDE0CF', '#E1D3BE', '#EBDDC6'];
+const CATEGORIES = ['Semua', 'Serum', 'Moisturizer', 'Sunscreen'];
 
-// Data contoh, ganti dengan data favorit asli
-const INITIAL = [
-  { id: '2', nama: 'Vitamin C Serum', kategori: 'Serum', harga: 149000, rating: 4.7 },
-  { id: '3', nama: 'Barrier Cream', kategori: 'Moisturizer', harga: 129000, rating: 4.9 },
-  { id: '4', nama: 'Daily Sunscreen SPF 50', kategori: 'Sunscreen', harga: 99000, rating: 4.6 },
-];
+const rupiah = (n: number) => {
+  const text = String(n);
+  let hasil = '';
+  for (let i = 0; i < text.length; i++) {
+    if (i > 0 && (text.length - i) % 3 === 0) {
+      hasil += '.';
+    }
+    hasil += text[i];
+  }
+  return 'Rp ' + hasil;
+};
 
-const rupiah = (n: number) => 'Rp ' + String(n).replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+const getImage = (nama: string) => {
+  const t = nama.toLowerCase();
+  if (t.includes('vitamin')) return IMAGES.SerumVitC;
+  if (t.includes('micellar')) return IMAGES.MicellarWater;
+  if (t.includes('cleanser')) return IMAGES.cleanser;
+  if (t.includes('sunscreen')) return IMAGES.Sunscreen;
+  if (t.includes('cream')) return IMAGES.cream;
+  return IMAGES.serum;
+};
 
 export default function WishlistScreen({ navigation }: { navigation?: any }) {
-  const [items, setItems] = useState(INITIAL);
+  const { favorites, toggleFav } = useFavorites();
+  const [filter, setFilter] = useState('Semua');
 
-  const remove = (id: string) => setItems((l) => l.filter((p) => p.id !== id));
+  const items =
+    filter === 'Semua' ? favorites : favorites.filter((p) => p.kategori === filter);
 
   return (
     <View style={styles.container}>
+      <View style={styles.header}>
+        <View style={styles.headerSide} />
+        <Text style={styles.logo}>NUVÉRA</Text>
+        <TouchableOpacity
+          style={styles.headerSide}
+          onPress={() => navigation?.navigate?.('Cart')}
+        >
+          <Ionicons name="bag-outline" size={24} color={C.text} />
+        </TouchableOpacity>
+      </View>
+
       <FlatList
         data={items}
         keyExtractor={(p) => p.id}
-        contentContainerStyle={{ padding: 22, paddingBottom: 40, flexGrow: 1 }}
+        contentContainerStyle={styles.content}
         showsVerticalScrollIndicator={false}
         ListHeaderComponent={
-          <>
+          <View>
+            <View style={styles.topRow}>
+              <Text style={styles.eyebrow}>KOLEKSIMU</Text>
+              <Text style={styles.eyebrow}>{favorites.length} ITEM</Text>
+            </View>
+
             <Text style={styles.title}>Wishlist</Text>
-            <Text style={styles.sub}>
-              {items.length > 0 ? `${items.length} produk favoritmu.` : 'Simpan produk yang kamu suka.'}
-            </Text>
-          </>
+            <Text style={styles.sub}>Kecantikan dimulai dari pilihanmu</Text>
+
+            <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.chipRow}>
+              {CATEGORIES.map((c) => (
+                <TouchableOpacity
+                  key={c}
+                  style={[styles.chip, filter === c && styles.chipActive]}
+                  onPress={() => setFilter(c)}
+                >
+                  <Text style={[styles.chipText, filter === c && styles.chipTextActive]}>
+                    {c}
+                  </Text>
+                </TouchableOpacity>
+              ))}
+            </ScrollView>
+          </View>
         }
         ListEmptyComponent={
           <View style={styles.emptyBox}>
@@ -53,32 +95,45 @@ export default function WishlistScreen({ navigation }: { navigation?: any }) {
               <Ionicons name="heart-outline" size={40} color={C.primary} />
             </View>
             <Text style={styles.emptyTitle}>Wishlist masih kosong</Text>
-            <Text style={styles.emptySub}>Tekan ikon hati di produk untuk menyimpannya di sini.</Text>
-            <TouchableOpacity style={styles.button} onPress={() => navigation?.navigate?.('Shop')}>
-              <Ionicons name="bag-outline" size={18} color={C.surface} />
+            <Text style={styles.emptySub}>
+              Tekan ikon hati di produk untuk menyimpannya di sini.
+            </Text>
+            <TouchableOpacity
+              style={styles.button}
+              onPress={() => navigation?.navigate?.('Shop')}
+            >
               <Text style={styles.buttonText}>Lihat Produk</Text>
             </TouchableOpacity>
           </View>
         }
-        renderItem={({ item, index }) => (
+        renderItem={({ item }) => (
           <TouchableOpacity
             style={styles.card}
             activeOpacity={0.85}
             onPress={() => navigation?.navigate?.('Detail', { product: item })}
           >
-            
-            <View style={{ flex: 1 }}>
-              <Text style={styles.kategori}>{item.kategori}</Text>
-              <Text style={styles.nama} numberOfLines={2}>{item.nama}</Text>
+            <View style={styles.imageWrap}>
+              <Image source={getImage(item.nama)} style={styles.photo} resizeMode="cover" />
+              <TouchableOpacity
+                style={styles.heart}
+                onPress={() => toggleFav(item)}
+                hitSlop={8}
+              >
+                <Ionicons name="heart" size={18} color={C.danger} />
+              </TouchableOpacity>
+            </View>
+
+            <View style={styles.info}>
+              <Text style={styles.kategori}>{item.kategori.toUpperCase()}</Text>
+              <Text style={styles.nama} numberOfLines={2}>
+                {item.nama}
+              </Text>
               <View style={styles.ratingRow}>
                 <Ionicons name="star" size={13} color={C.accent} />
                 <Text style={styles.rating}>{item.rating}</Text>
               </View>
               <Text style={styles.harga}>{rupiah(item.harga)}</Text>
             </View>
-            <TouchableOpacity style={styles.heart} onPress={() => remove(item.id)} hitSlop={8}>
-              <Ionicons name="heart" size={22} color={C.danger} />
-            </TouchableOpacity>
           </TouchableOpacity>
         )}
       />
@@ -87,21 +142,172 @@ export default function WishlistScreen({ navigation }: { navigation?: any }) {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: C.bg, paddingTop: 50 },
-  title: { fontSize: 30, color: C.primary, fontFamily: 'PlayfairDisplay_600SemiBold' },
-  sub: { color: C.textSub, marginTop: 4, marginBottom: 18 },
-  card: { flexDirection: 'row', alignItems: 'center', gap: 14, backgroundColor: C.surface, borderRadius: 16, padding: 12, marginBottom: 12 },
-  img: { width: 84, height: 84, borderRadius: 12, alignItems: 'center', justifyContent: 'center' },
-  kategori: { color: C.textSub, fontSize: 11 },
-  nama: { color: C.text, fontWeight: 'bold', fontSize: 15, marginTop: 2 },
-  ratingRow: { flexDirection: 'row', alignItems: 'center', gap: 4, marginTop: 4 },
-  rating: { color: C.textSub, fontSize: 12 },
-  harga: { color: C.primary, fontWeight: 'bold', marginTop: 6 },
-  heart: { alignSelf: 'flex-start', padding: 4 },
-  emptyBox: { flex: 1, alignItems: 'center', justifyContent: 'center', paddingVertical: 60 },
-  emptyIcon: { width: 84, height: 84, borderRadius: 42, backgroundColor: C.secondary, alignItems: 'center', justifyContent: 'center' },
-  emptyTitle: { color: C.text, fontWeight: 'bold', fontSize: 17, marginTop: 16 },
-  emptySub: { color: C.textSub, textAlign: 'center', marginTop: 6, paddingHorizontal: 30 },
-  button: { flexDirection: 'row', alignItems: 'center', gap: 8, backgroundColor: C.primary, paddingHorizontal: 24, paddingVertical: 12, borderRadius: 24, marginTop: 20 },
-  buttonText: { color: C.surface, fontWeight: 'bold' },
+  container: {
+    flex: 1,
+    backgroundColor: C.bg,
+    paddingTop: 50,
+  },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 22,
+    paddingBottom: 14,
+    borderBottomWidth: 1,
+    borderBottomColor: C.secondary,
+  },
+  headerSide: {
+    width: 28,
+    alignItems: 'flex-end',
+  },
+  logo: {
+    fontFamily: 'PlayfairDisplay_600SemiBold',
+    fontSize: 20,
+    letterSpacing: 4,
+    color: C.text,
+  },
+  content: {
+    padding: 22,
+    paddingBottom: 40,
+    flexGrow: 1,
+  },
+  topRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  eyebrow: {
+    fontSize: 11,
+    letterSpacing: 2,
+    color: C.accent,
+  },
+  title: {
+    fontFamily: 'PlayfairDisplay_600SemiBold',
+    fontSize: 38,
+    color: C.text,
+    marginTop: 10,
+  },
+  sub: {
+    fontStyle: 'italic',
+    color: C.textSub,
+    marginTop: 6,
+  },
+  chipRow: {
+    marginTop: 18,
+    marginBottom: 18,
+    flexGrow: 0,
+  },
+  chip: {
+    backgroundColor: C.surface,
+    borderWidth: 1,
+    borderColor: C.secondary,
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 20,
+    marginRight: 8,
+  },
+  chipActive: {
+    backgroundColor: C.primary,
+    borderColor: C.primary,
+  },
+  chipText: {
+    color: C.text,
+    fontSize: 13,
+    fontWeight: '600',
+  },
+  chipTextActive: {
+    color: C.surface,
+  },
+  card: {
+    flexDirection: 'row',
+    backgroundColor: C.surface,
+    borderRadius: 18,
+    marginBottom: 14,
+    overflow: 'hidden',
+  },
+  imageWrap: {
+    width: 112,
+    height: 132,
+    backgroundColor: C.secondary,
+  },
+  photo: {
+    width: '100%',
+    height: '100%',
+  },
+  heart: {
+    position: 'absolute',
+    top: 8,
+    right: 8,
+    width: 30,
+    height: 30,
+    borderRadius: 15,
+    backgroundColor: C.surface,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  info: {
+    flex: 1,
+    padding: 14,
+    justifyContent: 'center',
+  },
+  kategori: {
+    fontSize: 11,
+    letterSpacing: 1.5,
+    color: C.accent,
+  },
+  nama: {
+    fontFamily: 'PlayfairDisplay_600SemiBold',
+    fontSize: 17,
+    color: C.text,
+    marginTop: 4,
+  },
+  ratingRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    marginTop: 6,
+  },
+  rating: {
+    color: C.textSub,
+    fontSize: 12,
+  },
+  harga: {
+    color: C.primary,
+    fontWeight: 'bold',
+    marginTop: 8,
+  },
+  emptyBox: {
+    alignItems: 'center',
+    paddingVertical: 60,
+  },
+  emptyIcon: {
+    width: 84,
+    height: 84,
+    borderRadius: 42,
+    backgroundColor: C.secondary,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  emptyTitle: {
+    color: C.text,
+    fontWeight: 'bold',
+    fontSize: 17,
+    marginTop: 16,
+  },
+  emptySub: {
+    color: C.textSub,
+    textAlign: 'center',
+    marginTop: 6,
+    paddingHorizontal: 30,
+  },
+  button: {
+    backgroundColor: C.primary,
+    paddingHorizontal: 24,
+    paddingVertical: 12,
+    borderRadius: 24,
+    marginTop: 20,
+  },
+  buttonText: {
+    color: C.surface,
+    fontWeight: 'bold',
+  },
 });

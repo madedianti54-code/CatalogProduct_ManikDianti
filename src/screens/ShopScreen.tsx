@@ -73,7 +73,7 @@ export default function ShopScreen({ navigation }: { navigation?: any }) {
         ListHeaderComponent={
           <>
             <Text style={styles.title}>Shop</Text>
-            <Text style={styles.sub}>Temukan produk skincare favoritmu.</Text>
+            <Text style={styles.sub}>Temukan produk skincare favoritmu</Text>
             <Text>Favorit: {favorites.length}</Text>
 
             <View style={styles.search}>
