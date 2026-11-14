@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -6,8 +6,10 @@ import {
   FlatList,
   StyleSheet,
   Alert,
+  Modal,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import QRCode from 'react-native-qrcode-svg';
 import { useCart } from './CartContext';
 
 const rupiah = (n: number) =>
@@ -20,26 +22,22 @@ export default function CartScreen() {
     (sum, item) => sum + item.price * item.quantity,
     0
   );
+const [qrisVisible, setQrisVisible] = useState(false);
+const [orderId, setOrderId] = useState('');
+
 const handleCheckout = () => {
   if (cart.length === 0) {
     Alert.alert('Keranjang kosong', 'Tambahkan produk dulu ya.');
     return;
   }
+  setOrderId('ORD-' + Date.now());
+  setQrisVisible(true);
+};
 
-  Alert.alert(
-    'Konfirmasi Checkout',
-    `Total belanja ${rupiah(total)}. Lanjutkan?`,
-    [
-      { text: 'Batal', style: 'cancel' },
-      {
-        text: 'Bayar',
-        onPress: () => {
-          clearCart();
-          Alert.alert('Berhasil', 'Pesanan kamu sudah dibuat. Terima kasih!');
-        },
-      },
-    ]
-  );
+const handlePaid = () => {
+  setQrisVisible(false);
+  clearCart();
+  Alert.alert('Pembayaran berhasil', 'Terima kasih sudah berbelanja!');
 };
   return (
     <View style={styles.container}>
@@ -111,7 +109,30 @@ const handleCheckout = () => {
           </View>
         </>
       )}
+      
+      <Modal visible={qrisVisible} transparent animationType="slide">
+  <View style={styles.modalBg}>
+    <View style={styles.modalCard}>
+      <Text style={styles.modalTitle}>Bayar dengan QRIS</Text>
+      <Text style={styles.modalTotal}>{rupiah(total)}</Text>
+
+      <QRCode value={`QRIS-DEMO|${orderId}|${total}`} size={200} />
+
+      <Text style={styles.modalNote}>
+        Scan QR ini dengan aplikasi e-wallet atau mobile banking.
+      </Text>
+
+      <TouchableOpacity style={styles.checkout} onPress={handlePaid}>
+        <Text style={styles.checkoutText}>Saya Sudah Bayar</Text>
+      </TouchableOpacity>
+      <TouchableOpacity onPress={() => setQrisVisible(false)}>
+        <Text style={styles.cancelText}>Batal</Text>
+      </TouchableOpacity>
     </View>
+  </View>
+</Modal>
+    </View>
+
   );
 }
 
@@ -122,6 +143,12 @@ const styles = StyleSheet.create({
     paddingTop: 60,
     paddingHorizontal: 20,
   },
+  modalBg: { flex: 1, backgroundColor: 'rgba(0,0,0,0.5)', justifyContent: 'flex-end' },
+  modalCard: { backgroundColor: '#fff', padding: 24, borderTopLeftRadius: 24, borderTopRightRadius: 24, alignItems: 'center', gap: 14 },
+  modalTitle: { fontSize: 18, fontWeight: '700', color: '#455536' },
+  modalTotal: { fontSize: 22, fontWeight: '800', color: '#33291F' },
+  modalNote: { fontSize: 12, color: '#6B5D4F', textAlign: 'center' },
+  cancelText: { color: '#B65C4A', fontWeight: '600', marginTop: 4 },
   title: {
     fontSize: 28,
     fontWeight: 'bold',
