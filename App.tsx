@@ -9,7 +9,6 @@ import DetailScreen from './src/screens/DetailScreen';
 import { FavoritesProvider } from './src/screens/FavoritesContext';
 import { CartProvider } from './src/screens/CartContext';
 
-
 const Stack = createNativeStackNavigator();
 
 export default function App() {
@@ -17,18 +16,18 @@ export default function App() {
   if (!loaded) return null;
 
   return (
-  <CartProvider>
-    <FavoritesProvider>
-      <NavigationContainer>
-        <Stack.Navigator screenOptions={{ headerShown: false }}>
-          <Stack.Screen name="Welcome" component={Welcomescreen} />
-          <Stack.Screen name="Login" component={LoginScreen} />
-          <Stack.Screen name="Register" component={RegisterScreen} />
-          <Stack.Screen name="Main" component={MainTabs} />
-          <Stack.Screen name="Detail" component={DetailScreen} />
-        </Stack.Navigator>
-      </NavigationContainer>
-    </FavoritesProvider>
-  </CartProvider>
-);
+    <CartProvider>
+      <FavoritesProvider>
+        <NavigationContainer>
+          <Stack.Navigator screenOptions={{ headerShown: false }}>
+            <Stack.Screen name="Welcome" component={Welcomescreen} />
+            <Stack.Screen name="Login" component={LoginScreen} />
+            <Stack.Screen name="Register" component={RegisterScreen} />
+            <Stack.Screen name="Main" component={MainTabs} />
+            <Stack.Screen name="Detail" component={DetailScreen} />
+          </Stack.Navigator>
+        </NavigationContainer>
+      </FavoritesProvider>
+    </CartProvider>
+  );
 }

@@ -1,11 +1,11 @@
 import { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, ScrollView, Alert, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import ProductCard from '../Components/ProductCard';
 import HeroBanner from '../Components/HeroBanner';
 import ConcernList from '../Components/ConcernList';
 import PromoBanner from '../Components/PromoBanner';
 import { PRODUCTS, Product } from '../Data/products';
-import ProductCard from '../Components/ProductCard';
 
 type Props = {
   onProductPress?: (product: Product) => void;
@@ -36,10 +36,11 @@ export default function HomeScreen({ onProductPress, onNavigate }: Props) {
             <Ionicons name="heart-outline" size={22} color="#33291F" />
           </TouchableOpacity>
           <TouchableOpacity
-        style={styles.iconButton}
-        onPress={() => onNavigate?.('Cart')}>
-      <Ionicons name="bag-outline" size={22} color="#33291F" />
-</TouchableOpacity>
+            style={styles.iconButton}
+            onPress={() => onNavigate?.('Cart')}
+          >
+            <Ionicons name="bag-outline" size={22} color="#33291F" />
+          </TouchableOpacity>
         </View>
       </View>
 

@@ -14,12 +14,12 @@ export default function WelcomeScreen({ navigation }: any) {
       <Text style={styles.title}>NUVÉRA</Text>
 
       <Image
-        source={require('../../assets/Wajahhh.png')}
+        source={require('../../assets/wajahhhh.png')}
         style={styles.imageBesar}
       />
 
       <Image
-        source={require('../../assets/sign in.png')}
+        source={require('../../assets/ini serum.png')}
         style={styles.imageKecil}
       />
 

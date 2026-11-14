@@ -4,13 +4,13 @@ import { Ionicons } from '@expo/vector-icons';
 export default function HeroBanner({ onPress }: { onPress: () => void }) {
   return (
     <ImageBackground
-      source={require('../../assets/Wajahhh.png')}
+      source={require('../../assets/fotonya.png')}
       style={styles.hero}
       imageStyle={styles.image}
     >
       <View style={styles.overlay} />
-      <Text style={styles.title}>Kulit sehat,{'\n'}tanpa ribet.</Text>
-      <Text style={styles.sub}>Formula bersih. Hasil terlihat.</Text>
+      <Text style={styles.title}>Kulit sehat{'\n'}tanpa ribet</Text>
+      <Text style={styles.sub}>Formula bersih, hasil terlihat</Text>
       <TouchableOpacity style={styles.button} onPress={onPress}>
         <Text style={styles.buttonText}>Temukan Rutinitasmu</Text>
         <Ionicons name="arrow-forward" size={16} color="#fff" />
@@ -32,14 +32,9 @@ const styles = StyleSheet.create({
     borderRadius: 24,
   },
   overlay: {
-  position: 'absolute',
-  top: 0,
-  left: 0,
-  right: 0,
-  bottom: 0,
-  backgroundColor: 'rgba(51,41,31,0.35)',
-},
-
+    ...StyleSheet.absoluteFill,
+    backgroundColor: 'rgba(51,41,31,0.35)',
+  },
   title: {
     fontFamily: 'PlayfairDisplay_600SemiBold',
     fontSize: 26,

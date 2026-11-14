@@ -8,9 +8,9 @@ export type Product = {
   concern: string;
   category: string;
   rating: string;
-  reviews: string;
   badge?: string;
   description: string;
+  image?: any;
 };
 
 export const PRODUCTS: Product[] = [
@@ -24,9 +24,9 @@ export const PRODUCTS: Product[] = [
     concern: 'Brighten',
     category: 'Serum',
     rating: '4.8',
-    reviews: '12K+',
     badge: 'Best Seller',
-    description: 'Serum ringan untuk membantu kulit tampak lebih cerah dan lembap.',
+    description: 'Serum ringan untuk membantu kulit tampak lebih cerah dan lembap dan',
+    image: require('../../assets/serum cahaya.png'),
   },
   {
     id: '2',
@@ -38,8 +38,8 @@ export const PRODUCTS: Product[] = [
     concern: 'Hydrate',
     category: 'Moisturizer',
     rating: '4.7',
-    reviews: '8K+',
-    description: 'Krim malam bertekstur lembut yang menutrisi kulit saat tidur.',
+    description: 'Krim malam bertekstur lembut yang menutrisi kulit saat tidur',
+    image: require('../../assets/krim malam.png'),
   },
   {
     id: '3',
@@ -51,8 +51,8 @@ export const PRODUCTS: Product[] = [
     concern: 'Protect',
     category: 'Lip Care',
     rating: '4.9',
-    reviews: '14K+',
-    description: 'Lip tint dengan warna mawar alami dan tekstur ringan di bibir.',
+    description: 'Lip tint dengan warna mawar alami dan tekstur ringan di bibir',
+    image: require('../../assets/lip tint mawar.png'),
   },
   {
     id: '4',
@@ -64,9 +64,9 @@ export const PRODUCTS: Product[] = [
     concern: 'Calm',
     category: 'Body Care',
     rating: '4.6',
-    reviews: '5K+',
     badge: 'New',
-    description: 'Body butter kaya pelembap untuk kulit tubuh yang halus dan kenyal.',
+    description: 'Body butter kaya pelembap untuk kulit tubuh yang halus dan kenyal',
+    image: require('../../assets/body butter.png'),
   },
   {
     id: '5',
@@ -78,9 +78,9 @@ export const PRODUCTS: Product[] = [
     concern: 'Firm',
     category: 'Essence',
     rating: '4.8',
-    reviews: '3K+',
     badge: 'New',
-    description: 'Essence ringan yang membantu kulit tampak lebih kenyal dan kencang.',
+    description: 'Essence ringan yang membantu kulit tampak lebih kenyal dan kencang',
+    image: require('../../assets/firming essence.png'),
   },
   {
     id: '6',
@@ -92,9 +92,9 @@ export const PRODUCTS: Product[] = [
     concern: 'Protect',
     category: 'Sunscreen',
     rating: '4.9',
-    reviews: '9K+',
     badge: 'Best Seller',
-    description: 'Tabir surya ringan dengan perlindungan SPF 50 untuk kulit sehari-hari.',
+    description: 'Tabir surya ringan dengan perlindungan SPF 50 untuk kulit sehari-hari',
+    image: require('../../assets/daily sun shield.png'),
   },
   {
     id: '7',
@@ -106,8 +106,8 @@ export const PRODUCTS: Product[] = [
     concern: 'Calm',
     category: 'Cleanser',
     rating: '4.7',
-    reviews: '10K+',
-    description: 'Pembersih wajah berbusa lembut yang mengangkat kotoran tanpa membuat kulit kering.',
+    description: 'Pembersih wajah berbusa lembut yang mengangkat kotoran tanpa membuat kulit kering',
+    image: require('../../assets/gentle cleanser.png'),
   },
   {
     id: '8',
@@ -119,9 +119,9 @@ export const PRODUCTS: Product[] = [
     concern: 'Firm',
     category: 'Face Oil',
     rating: '4.8',
-    reviews: '4K+',
     badge: 'New',
-    description: 'Minyak wajah malam hari yang membantu menutrisi dan menjaga kekenyalan kulit.',
+    description: 'Minyak wajah malam hari yang membantu menutrisi dan menjaga kekenyalan kulit',
+    image: require('../../assets/night repair oil.png'),
   },
   {
     id: '9',
@@ -133,7 +133,7 @@ export const PRODUCTS: Product[] = [
     concern: 'Brighten',
     category: 'Toner',
     rating: '4.6',
-    reviews: '6K+',
-    description: 'Toner dengan vitamin C yang menyegarkan dan membantu kulit tampak lebih cerah.',
+    description: 'Toner dengan vitamin C yang menyegarkan dan membantu kulit tampak lebih cerah',
+    image: require('../../assets/vitamin c toner.png'),
   },
 ];
