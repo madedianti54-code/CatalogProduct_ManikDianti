@@ -1,8 +1,10 @@
 import { View, Text, TouchableOpacity, Alert, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { useCart } from './CartContext';
 
 export default function DetailScreen({ route, navigation }: any) {
   const { product } = route.params;
+  const { addToCart } = useCart();
 
   return (
     <View style={styles.container}>
@@ -14,16 +16,25 @@ export default function DetailScreen({ route, navigation }: any) {
         <Ionicons name="sparkles-outline" size={64} color="#455536" />
       </View>
 
-      <Text style={styles.category}>{product.category}</Text>
-      <Text style={styles.name}>{product.name}</Text>
-      <Text style={styles.price}>{product.price}</Text>
-      <Text style={styles.desc}>{product.description}</Text>
+      <Text style={styles.category}>
+  {product.category ?? product.kategori}
+</Text>
 
+<Text style={styles.name}>
+  {product.name ?? product.nama}
+</Text>
+
+<Text style={styles.price}>
+  Rp {Number(product.price ?? product.harga).toLocaleString('id-ID')}
+</Text>
       <View style={styles.spacer} />
 
       <TouchableOpacity
         style={styles.button}
-        onPress={() => Alert.alert('Berhasil', product.name + ' ditambahkan ke keranjang')}
+        onPress={() => {
+          addToCart(product);
+          Alert.alert('Berhasil', product.name + ' ditambahkan ke keranjang');
+        }}
       >
         <Ionicons name="bag-add-outline" size={22} color="#fff" />
         <Text style={styles.buttonText}>Add to Cart</Text>

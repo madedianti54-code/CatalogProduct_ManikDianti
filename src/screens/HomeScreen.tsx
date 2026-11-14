@@ -37,7 +37,7 @@ export default function HomeScreen({ onProductPress, onNavigate }: Props) {
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.iconButton}
-            onPress={() => Alert.alert('Keranjang', 'Keranjang kamu masih kosong')}
+            onPress={() => onNavigate?.('Cart')}
           >
             <Ionicons name="bag-outline" size={22} color="#33291F" />
           </TouchableOpacity>
