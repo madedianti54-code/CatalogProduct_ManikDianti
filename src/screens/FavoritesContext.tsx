@@ -3,9 +3,9 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Product } from '../Data/products';
 
 type Ctx = {
-  favorites: Product[];
+  favorites: any[];
   isFav: (id: string) => boolean;
-  toggleFav: (product: Product) => void;
+  toggleFav: (product: { id: string } & Record<string, any>) => void;
 };
 
 const FavoritesContext = createContext<Ctx>({
@@ -21,7 +21,7 @@ export function FavoritesProvider({
 }: {
   children: React.ReactNode;
 }) {
-  const [favorites, setFavorites] = useState<Product[]>([]);
+const [favorites, setFavorites] = useState<any[]>([]);
   const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
@@ -47,7 +47,7 @@ export function FavoritesProvider({
   const isFav = (id: string) =>
     favorites.some((product) => product.id === id);
 
-  const toggleFav = (product: Product) => {
+  const toggleFav = (product: { id: string } & Record<string, any>) => {
     setFavorites((current) =>
       current.some((item) => item.id === product.id)
         ? current.filter((item) => item.id !== product.id)

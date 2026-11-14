@@ -5,6 +5,7 @@ import {
   TouchableOpacity,
   FlatList,
   StyleSheet,
+  Alert,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useCart } from './CartContext';
@@ -13,13 +14,33 @@ const rupiah = (n: number) =>
   'Rp ' + String(n).replace(/\B(?=(\d{3})+(?!\d))/g, '.');
 
 export default function CartScreen() {
-  const { cart, removeFromCart, updateQuantity } = useCart();
+  const { cart, removeFromCart, updateQuantity, clearCart } = useCart();
 
   const total = cart.reduce(
     (sum, item) => sum + item.price * item.quantity,
     0
   );
+const handleCheckout = () => {
+  if (cart.length === 0) {
+    Alert.alert('Keranjang kosong', 'Tambahkan produk dulu ya.');
+    return;
+  }
 
+  Alert.alert(
+    'Konfirmasi Checkout',
+    `Total belanja ${rupiah(total)}. Lanjutkan?`,
+    [
+      { text: 'Batal', style: 'cancel' },
+      {
+        text: 'Bayar',
+        onPress: () => {
+          clearCart();
+          Alert.alert('Berhasil', 'Pesanan kamu sudah dibuat. Terima kasih!');
+        },
+      },
+    ]
+  );
+};
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Keranjang Saya</Text>
@@ -83,7 +104,7 @@ export default function CartScreen() {
 
             <TouchableOpacity
               style={styles.checkout}
-              onPress={() => {}}
+              onPress={handleCheckout}
             >
               <Text style={styles.checkoutText}>Checkout</Text>
             </TouchableOpacity>
