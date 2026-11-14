@@ -25,7 +25,7 @@ export const PRODUCTS: Product[] = [
     category: 'Serum',
     rating: '4.8',
     badge: 'Best Seller',
-    description: 'Serum ringan untuk membantu kulit tampak lebih cerah dan lembap.',
+    description: 'Serum ringan untuk membantu kulit tampak lebih cerah dan lembap dan',
     image: require('../../assets/serum cahaya.png'),
   },
   {
@@ -38,7 +38,7 @@ export const PRODUCTS: Product[] = [
     concern: 'Hydrate',
     category: 'Moisturizer',
     rating: '4.7',
-    description: 'Krim malam bertekstur lembut yang menutrisi kulit saat tidur.',
+    description: 'Krim malam bertekstur lembut yang menutrisi kulit saat tidur',
     image: require('../../assets/krim malam.png'),
   },
   {
@@ -51,7 +51,7 @@ export const PRODUCTS: Product[] = [
     concern: 'Protect',
     category: 'Lip Care',
     rating: '4.9',
-    description: 'Lip tint dengan warna mawar alami dan tekstur ringan di bibir.',
+    description: 'Lip tint dengan warna mawar alami dan tekstur ringan di bibir',
     image: require('../../assets/lip tint mawar.png'),
   },
   {
@@ -65,7 +65,7 @@ export const PRODUCTS: Product[] = [
     category: 'Body Care',
     rating: '4.6',
     badge: 'New',
-    description: 'Body butter kaya pelembap untuk kulit tubuh yang halus dan kenyal.',
+    description: 'Body butter kaya pelembap untuk kulit tubuh yang halus dan kenyal',
     image: require('../../assets/body butter.png'),
   },
   {
@@ -79,7 +79,7 @@ export const PRODUCTS: Product[] = [
     category: 'Essence',
     rating: '4.8',
     badge: 'New',
-    description: 'Essence ringan yang membantu kulit tampak lebih kenyal dan kencang.',
+    description: 'Essence ringan yang membantu kulit tampak lebih kenyal dan kencang',
     image: require('../../assets/firming essence.png'),
   },
   {
@@ -93,7 +93,7 @@ export const PRODUCTS: Product[] = [
     category: 'Sunscreen',
     rating: '4.9',
     badge: 'Best Seller',
-    description: 'Tabir surya ringan dengan perlindungan SPF 50 untuk kulit sehari-hari.',
+    description: 'Tabir surya ringan dengan perlindungan SPF 50 untuk kulit sehari-hari',
     image: require('../../assets/daily sun shield.png'),
   },
   {
@@ -106,7 +106,7 @@ export const PRODUCTS: Product[] = [
     concern: 'Calm',
     category: 'Cleanser',
     rating: '4.7',
-    description: 'Pembersih wajah berbusa lembut yang mengangkat kotoran tanpa membuat kulit kering.',
+    description: 'Pembersih wajah berbusa lembut yang mengangkat kotoran tanpa membuat kulit kering',
     image: require('../../assets/gentle cleanser.png'),
   },
   {
@@ -120,7 +120,7 @@ export const PRODUCTS: Product[] = [
     category: 'Face Oil',
     rating: '4.8',
     badge: 'New',
-    description: 'Minyak wajah malam hari yang membantu menutrisi dan menjaga kekenyalan kulit.',
+    description: 'Minyak wajah malam hari yang membantu menutrisi dan menjaga kekenyalan kulit',
     image: require('../../assets/night repair oil.png'),
   },
   {
@@ -133,7 +133,7 @@ export const PRODUCTS: Product[] = [
     concern: 'Brighten',
     category: 'Toner',
     rating: '4.6',
-    description: 'Toner dengan vitamin C yang menyegarkan dan membantu kulit tampak lebih cerah.',
+    description: 'Toner dengan vitamin C yang menyegarkan dan membantu kulit tampak lebih cerah',
     image: require('../../assets/vitamin c toner.png'),
   },
 ];
