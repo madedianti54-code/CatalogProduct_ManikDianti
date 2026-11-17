@@ -110,7 +110,9 @@ export default function ShopScreen({ navigation }: { navigation?: any }) {
           <TouchableOpacity
             style={styles.card}
             activeOpacity={0.85}
-            onPress={() => navigation?.navigate?.('Detail', { product: item })}
+            onPress={() => 
+              navigation?.navigate?.('Detail', { 
+                product: item, image: getImage(item.nama) })}
           >
             <View style={[styles.img, { backgroundColor: IMG_BG[index % IMG_BG.length] }]}>
  {getImage(item.nama) ? (

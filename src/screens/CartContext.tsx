@@ -6,6 +6,7 @@ type Product = {
   category: string;
   price: number;
   quantity: number;
+  image?: any;
 };
 
 type CartContextType = {
@@ -30,7 +31,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       typeof rawPrice === 'number'
         ? rawPrice
         : Number(String(rawPrice).replace(/[^0-9]/g, ''));
-
+const image = product.image ?? product.gambar;
     setCart((current) => {
       const existing = current.find((item) => item.id === id);
 
@@ -42,7 +43,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         );
       }
 
-      return [...current, { id, name, category, price, quantity: 1 }];
+      return [...current, { id, name, category, price, quantity: 1, image }];
     });
   };
 

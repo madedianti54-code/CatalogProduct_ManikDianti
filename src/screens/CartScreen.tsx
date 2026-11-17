@@ -171,27 +171,34 @@ const styles = StyleSheet.create({
     marginTop: 8,
   },
   card: {
-    backgroundColor: '#fff',
-    padding: 16,
-    borderRadius: 15,
-    marginBottom: 12,
-  },
+  backgroundColor: '#FFFFFF',
+  borderRadius: 20,
+  padding: 16,
+  marginBottom: 14,
+  shadowColor: '#455536',
+  shadowOffset: { width: 0, height: 4 },
+  shadowOpacity: 0.08,
+  shadowRadius: 10,
+  elevation: 3,
+},
+
   productInfo: {
     marginBottom: 15,
   },
   name: {
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: '700',
     color: '#33291F',
   },
   category: {
-    color: '#8A8178',
+    fontSize: 12,
+    color: '#8A8172',
     marginTop: 4,
   },
   price: {
     color: '#455536',
-    fontWeight: 'bold',
-    marginTop: 6,
+    fontWeight: '800',
+    marginTop: 8,
   },
   actions: {
     flexDirection: 'row',
@@ -200,7 +207,7 @@ const styles = StyleSheet.create({
   },
   quantity: {
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: '700',
   },
   footer: {
     backgroundColor: '#fff',
@@ -213,7 +220,7 @@ const styles = StyleSheet.create({
   },
   total: {
     fontSize: 22,
-    fontWeight: 'bold',
+    fontWeight: '800',
     color: '#455536',
     marginTop: 5,
   },
